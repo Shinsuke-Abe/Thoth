@@ -41,6 +41,15 @@ class DocDirectoryParserSpec extends Specification {
 
       DocDirectoryParser(targetDir.toString).resources must equalTo(expected)
     }
-    // TODO 子ディレクトリもパースできる
+
+    "子ディレクトリもパースできる" >> {
+      val targetDir = targetBaseDir/'haschilddir
+      val expectedMarkdown = Seq(targetDir/'child/"barchild.md", targetDir/'child/"foochild.md")
+      val expectedUmls = Seq(targetDir/'child/'umls/"sample1.puml", targetDir/'child/'umls/"sample2.puml")
+
+      val actual =  DocDirectoryParser(targetDir.toString)
+
+      actual.children must equalTo(Seq(DocDirectory(expectedMarkdown, expectedUmls, Seq(), Seq())))
+    }
   }
 }

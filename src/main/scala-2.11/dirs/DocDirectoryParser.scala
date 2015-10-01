@@ -5,7 +5,9 @@ import ammonite.ops._
  * Created by shinsuke-abe on 2015/10/01.
  */
 object DocDirectoryParser {
-  def apply(path: String): DocDirectory = {
+  def apply(path: String): DocDirectory = parseDir(path)
+
+  def parseDir(path: String): DocDirectory = {
     val list = ls! Path(path)
 
     val markdowns = list.filter(_ hasSpecifiedExtension ".md")
@@ -22,7 +24,10 @@ object DocDirectoryParser {
 
     val filesOutOfRules = list.find(_ hasNotSpecifiedExtension ".md")
 
-    DocDirectory(markdowns, umls, resources.toList ::: filesOutOfRules.toList)
+    val children = list.filter(p => (stat! p).isDir && (stat! p).name != "umls" && (stat! p).name != "resources")
+
+    if(children.isEmpty) DocDirectory(markdowns, umls, resources.toList ::: filesOutOfRules.toList, Seq())
+    else DocDirectory(markdowns, umls, resources.toList ::: filesOutOfRules.toList, children.map(p => parseDir(p.toString())))
   }
 
   implicit class RichPath(path: Path) {
