@@ -8,6 +8,11 @@ object DocDirectoryParser {
 
     val markdowns = list.filter(p => (stat! p).isFile && (stat! p).name.endsWith(".md"))
 
-    DocDirectory(Some(markdowns))
+    val umls = list.find(p => (stat! p).isDir && (stat! p).name == "umls") match {
+      case Some(umls) => ls! umls filter(p => (stat! p).isFile && (stat! p).name.endsWith(".puml"))
+      case None => Seq()
+    }
+
+    DocDirectory(markdowns, umls)
   }
 }

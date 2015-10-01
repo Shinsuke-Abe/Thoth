@@ -12,9 +12,15 @@ class DocDirectoryParserSpec extends Specification {
       val targetDir = targetBaseDir/'getmarkdowns
       val expected = Seq(targetDir/"bar.md", targetDir/"foo.md")
 
-      DocDirectoryParser(targetDir.toString()).markdowns must beSome(expected)
+      DocDirectoryParser(targetDir.toString).markdowns must equalTo(expected)
     }
-    // TODO umls配下のpumlファイルを取得できる
+
+    "umls配下のpumlファイルを取得できる" >> {
+      val targetDir = targetBaseDir/'getumls
+      val expected = Seq(targetDir/'umls/"sample1.puml", targetDir/'umls/"sample2.puml")
+
+      DocDirectoryParser(targetDir.toString).umls must equalTo(expected)
+    }
     // TODO resources配下のファイルを取得できる
     // TODO ルールに沿わないファイルはresoucesのリストに追加
     // TODO 子ディレクトリもパースできる
