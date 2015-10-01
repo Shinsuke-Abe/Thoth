@@ -12,7 +12,7 @@ object READMEGenerator {
   マークダウン内の一番最初のH1タグを文書タイトルとしてリンク文字列にする
 }
 
-object DocDirectory {
+object dirs.DocDirectory {
   + markdowns: List[File]
   + umls: List[File]
   + resources: List[File]

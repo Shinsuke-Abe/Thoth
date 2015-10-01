@@ -1,3 +1,5 @@
+package dirs
+
 import ammonite.ops.Path
 
 /**

@@ -1,5 +1,7 @@
-import org.specs2.mutable._
+package dirs
+
 import ammonite.ops._
+import org.specs2.mutable._
 
 /**
  * Created by shinsuke-abe on 2015/10/01.
@@ -8,6 +10,10 @@ class DocDirectoryParserSpec extends Specification {
   val targetBaseDir = cwd/'target/"scala-2.11"/"test-classes"/'DocDirectoryParserSpec
 
   "apply" >> {
+    "存在しないディレクトリを指定した場合は例外となる" >> {
+      DocDirectoryParser((targetBaseDir/'notfound).toString) must throwA[Exception]
+    }
+
     "markdownファイルを取得できる" >> {
       val targetDir = targetBaseDir/'getmarkdowns
       val expected = Seq(targetDir/"bar.md", targetDir/"foo.md")
