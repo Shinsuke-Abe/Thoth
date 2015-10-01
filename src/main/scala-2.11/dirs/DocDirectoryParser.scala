@@ -15,7 +15,12 @@ object DocDirectoryParser {
       case None => Seq()
     }
 
-    DocDirectory(markdowns, umls)
+    val resources = list.find(_ isSpecifiedDirectory "resources") match {
+      case Some(resources) => ls! resources
+      case None => Seq()
+    }
+
+    DocDirectory(markdowns, umls, resources)
   }
 
   implicit class RichPath(path: Path) {
