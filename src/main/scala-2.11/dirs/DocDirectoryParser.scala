@@ -20,11 +20,15 @@ object DocDirectoryParser {
       case None => Seq()
     }
 
-    DocDirectory(markdowns, umls, resources)
+    val filesOutOfRules = list.find(_ hasNotSpecifiedExtension ".md")
+
+    DocDirectory(markdowns, umls, resources.toList ::: filesOutOfRules.toList)
   }
 
   implicit class RichPath(path: Path) {
     def hasSpecifiedExtension(extension: String) = (stat! path).isFile && (stat! path).name.endsWith(extension)
+
+    def hasNotSpecifiedExtension(extension: String) = (stat! path).isFile && !(stat! path).name.endsWith(extension)
 
     def isSpecifiedDirectory(name: String) = (stat! path).isDir && (stat! path).name == name
   }

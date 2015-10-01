@@ -34,7 +34,13 @@ class DocDirectoryParserSpec extends Specification {
 
       DocDirectoryParser(targetDir.toString).resources must equalTo(expected)
     }
-    // TODO ルールに沿わないファイルはresoucesのリストに追加
+
+    "ルールに沿わないファイルはresoucesのリストに追加" >> {
+      val targetDir = targetBaseDir/'getresourcesplus
+      val expected = Seq(targetDir/'resources/"sample1.txt", targetDir/'resources/"sample2.txt", targetDir/"sample3.txt")
+
+      DocDirectoryParser(targetDir.toString).resources must equalTo(expected)
+    }
     // TODO 子ディレクトリもパースできる
   }
 }
