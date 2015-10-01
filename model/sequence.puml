@@ -1,0 +1,49 @@
+@startuml
+actor ユーザ
+
+ユーザ --> ThothMain: 実行
+note right
+  引数：
+    ドキュメントのトップディレクトリ
+    出力先ディレクトリ
+    Officeドキュメント生成フラグ
+end note
+
+ThothMain --> ThothMain : ディレクトリ走査をして対象リストを作成
+
+note right: このタイミングで拡張子がルールに外れるものはresourcesとして扱う
+
+loop 対象リストを再帰的に
+    loop for each 対象リスト.markdowns
+      ThothMain --> TagParser : Thoth固有タグのパース
+      TagParser --> ThothMain : Thoth固有タグのパース_Reponse
+
+      ThothMain --> ThothMain : 出力先にコピー
+    end
+
+    loop for each 対象リスト.umls
+      ThothMain --> PlantUml : UMLの画像ファイルを出力
+      PlantUml --> ThothMain : UMLの画像ファイルを出力_Response
+
+      note right : png形式で、直接outputに出力する
+    end
+
+    loop for each 対象リスト.resources
+      ThothMain --> ThothMain : 出力先にコピー
+    end
+
+    ThothMain --> READMEGenerator: README生成
+    READMEGenerator --> ThothMain: README生成_Response
+end
+
+alt Officeドキュメント生成フラグ=true
+    ThothMain --> PandocCommandGenerator : Pandocコマンド生成
+    PandocCommandGenerator --> ThothMain : Pandocコマンド生成_Response
+
+    ThothMain --> Process: コマンド実行
+    Process --> ThothMain: コマンド実行_Response
+end
+
+ThothMain --> ユーザ: 実行_Response
+
+@enduml

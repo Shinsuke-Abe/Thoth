@@ -1,0 +1,46 @@
+@startuml
+
+object TagParser {
+  plantUML埋め込み用のタグ解釈
+  その他カスタムタグ解釈
+}
+
+object READMEGenerator {
+  ディレクトリの情報を元にREADMEを生成
+  指定したディレクトリの直下にあるマークダウンファイルがリンク対象
+  READMEページのテンプレートは切り出しておく
+  マークダウン内の一番最初のH1タグを文書タイトルとしてリンク文字列にする
+}
+
+object DocDirectory {
+  + markdowns: List[File]
+  + umls: List[File]
+  + resources: List[File]
+  + childDirectory: List[File]
+}
+
+note bottom
+  ドキュメントディレクトリの最小構成
+  マークダウンとumlのみ重要なのでルール決めをする
+  その他はスルーしてそのまま出力にコピー
+
+  ドキュメントの構成は以下のとおりで、
+  特別な意味を持って扱われるディレクトリは「pumls」と「resouces」。
+  マークダウンはドキュメントルートに置いている拡張子mdのもの。
+  umlはpumlsに置いている拡張子pumlのもの。
+  そのほかのファイルはそのまま出力。
+  ドキュメントルート
+    + hoge.md
+    + fuga.md
+    + pumls(directory)
+      + foo.puml
+      + bar.puml
+    + resources(directory)
+    + 子ドキュメントルート -> 以下の構成は同じ
+end note
+
+object PandocCommandGenerator {
+  Pandoc実行のためのコマンドを生成する
+}
+
+@enduml
