@@ -7,6 +7,16 @@ import ammonite.ops._
  * Created by shinsuke-abe on 2015/10/02.
  */
 class PandocExecutorSpec extends Specification {
+  "apply" >> {
+    "作成" >> {
+      val inputTarget = cwd/'target/"scala-2.11"/"test-classes"/'PandocExecutorSpec/"test.md"
+      val outputTarget = Path(Path.makeTmp)/'Thoth/'office
+
+      PandocExecutor(inputTarget, outputTarget)
+
+      (exists! (outputTarget/"test.docx")) must beTrue
+    }
+  }
   "generateArgs" >> {
     "引数リストを作る" >> {
       val inputTarget = cwd/'target/"scala-2.11"/"test-classes"/'PandocExecutorSpec/"test.md"

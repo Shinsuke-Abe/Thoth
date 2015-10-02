@@ -7,6 +7,14 @@ import ammonite.ops._
  */
 object PandocExecutor {
 
+  def apply(inputDir: Path, outputDir: Path) = {
+    implicit val wd: Path = inputDir/up
+
+    if(exists! outputDir == false) mkdir! outputDir
+
+    %%pandoc(generateArgs(inputDir, outputDir))
+  }
+
   def generateArgs(inputDir: Path, outputDir: Path) = {
     require(exists! inputDir && (stat! inputDir).isFile)
 
