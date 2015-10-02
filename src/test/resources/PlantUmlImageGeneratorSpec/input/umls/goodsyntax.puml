@@ -1,0 +1,7 @@
+@startuml
+
+object hoge
+
+hoge --> huga
+
+@enduml
