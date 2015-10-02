@@ -49,11 +49,25 @@ class ThothCustomMarkdownParserSpec extends Specification {
       ThothCustomMarkdownParser(targetFile) must equalTo(expected)
     }
 
-    // TODO 記法は &[代替テキスト](pumlファイルのパス "タイトル") とする
-    // TODO 代替テキストは省略可能
-    // TODO タイトルは省略可能
-    // TODO pumlがルールに従って存在しない場合は例外をスロー
-    // TODO pumlがルール通りに存在する場合はイメージのマークダウンに書き換える
+    "全ての指定を省略しないpumlマークダウンをパースする" >> {
+      val targetFile = targetBaseDir/"pumlmarkdown.md"
+      val expected = """# タイトル
+                       |
+                       |テストマークダウンファイル
+                       |
+                       |## セクション１
+                       |
+                       |テスト
+                       |
+                       |![代替テキスト](puml/sample.png "タイトル")
+                       |
+                       |コメント
+                       |
+                       |コメント""".stripMargin
+
+      ThothCustomMarkdownParser(targetFile) must equalTo(expected)
+    }
+
     "カスタムタグがない場合は入力ファイルの内容と同じテキストが返る" >> {
       val targetFile = targetBaseDir/"withoutcustommarkdown.md"
       val expected = read! targetFile
