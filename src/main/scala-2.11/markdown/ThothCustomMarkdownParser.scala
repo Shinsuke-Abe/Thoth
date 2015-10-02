@@ -9,7 +9,12 @@ import scala.util.parsing.combinator.RegexParsers
  */
 object ThothCustomMarkdownParser extends RegexParsers {
   lazy val pumlMarkdown = mark ~> pumlFile ^^ { "!" + _ }
-  lazy val pumlFile = "(" ~> """.+\.puml""".r <~ ")" ^^ { "(" + _.replace(".puml", ".png") + ")" }
+  lazy val pumlFile = "(" ~> """.+\.puml""".r ~ opt(title) <~ ")" ^^ {
+    case file ~ Some(title) => "(" + file.replace(".puml", ".png") + " " + title.mkString("\"", "", "\"") + ")"
+    case file ~ None => "(" + file.replace(".puml", ".png") + ")"
+  }
+
+  lazy val title = "\"" ~> "[^\"]*".r <~ "\""
   lazy val mark = "$"
 
   def apply(file: Path) = (read! file).split("\n").toList.map(line =>
