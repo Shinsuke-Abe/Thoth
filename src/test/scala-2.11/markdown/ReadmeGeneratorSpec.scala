@@ -3,6 +3,7 @@ package markdown
 import java.io.IOException
 import java.nio.file.NoSuchFileException
 
+import dirs.DocDirectory
 import org.specs2.mutable._
 import ammonite.ops._
 
@@ -62,18 +63,38 @@ class ReadmeGeneratorSpec extends Specification {
     }
   }
 
-  // TODO README.mdを生成する
+  "apply" >> {
+    "README.mdを生成する" >> {
+      val expected =
+        """# ReadmeGeneratorSpec
+          |
+          |## ドキュメント一覧
+          |
+          |* [第１章](hasmultipletitleheader.md)
+          |* [テストタイトル](hastitleheader.md)
+          |* [ドキュメントタイトル](hastitleheaderonsecond.md)
+          |* [withouttitleheader.md](withouttitleheader.md)
+          |
+          |## サブドキュメント一覧
+          |
+          |* [SubDocument1](SubDocument1/README.md)
+          |* [SubDocument2](SubDocument2/README.md)""".stripMargin
 
-  // フォーマット
-  // # ディレクトリ名目次
-  //
-  // ## ドキュメント一覧
-  //
-  // * [H1タイトル](リンク)
-  // * ...
-  //
-  // ## サブドキュメント一覧
-  //
-  // * [ディレクトリ名](READMEへのリンク)
-  // * ...
+      val target = DocDirectory(
+        targetBaseDir,
+        Seq(
+          targetBaseDir/"hasmultipletitleheader.md",
+          targetBaseDir/"hastitleheader.md",
+          targetBaseDir/"hastitleheaderonsecond.md",
+          targetBaseDir/"withouttitleheader.md"),
+        Seq(),
+        Seq(),
+        Seq(DocDirectory(targetBaseDir/'SubDocument1, Seq(), Seq(), Seq(), Seq()),
+            DocDirectory(targetBaseDir/'SubDocument2, Seq(), Seq(), Seq(), Seq()))
+      )
+
+      ReadmeGenerator(target) must equalTo(expected)
+    }
+  }
+
 }

@@ -1,11 +1,27 @@
 package markdown
 
 import ammonite.ops._
+import dirs.DocDirectory
 
 /**
  * @author mao.instantlife at gmail.com
  */
 object ReadmeGenerator {
+  def apply(dir: DocDirectory) = {
+    val documentLinks = dir.markdowns.map(f => s"* ${createDocumentLink(f)}").mkString("\n")
+    val subDocumentLinks = dir.children.map(d => s"* ${createSubDocumentLink(d.base)}").mkString("\n")
+
+    s"""# ${(stat! dir.base).name}
+       |
+       |## ドキュメント一覧
+       |
+       |${documentLinks}
+       |
+       |## サブドキュメント一覧
+       |
+       |${subDocumentLinks}""".stripMargin
+  }
+
   def createDocumentLink(file: Path) = (read! file).split("\n").toList.find(_.startsWith("# ")) match {
     case Some(headerline) => {
       val title = headerline.replaceAll("# ", "")
