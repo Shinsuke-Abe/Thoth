@@ -45,7 +45,23 @@ class ReadmeGeneratorSpec extends Specification {
     }
   }
 
-  // TODO サブディレクトリがある場合は
+  "createSubDocumentLink" >> {
+    "指定されたパスがディレクトリの場合はリンクを作成する" >> {
+      ReadmeGenerator.createSubDocumentLink(targetBaseDir/'SubDocument1) must
+        equalTo("[SubDocument1](SubDocument1/README.md)")
+    }
+
+    "指定されたパスが存在しない場合は例外をスローする" >> {
+      ReadmeGenerator.createSubDocumentLink(cwd/'notfound) must
+        throwA[IllegalArgumentException]
+    }
+
+    "指定されたパスがファイルの場合は例外をスローする" >> {
+      ReadmeGenerator.createSubDocumentLink(targetBaseDir/"hastitleheader.md") must
+        throwA[IllegalArgumentException]
+    }
+  }
+
   // TODO README.mdを生成する
 
   // フォーマット

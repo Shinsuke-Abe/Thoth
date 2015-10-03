@@ -18,4 +18,10 @@ object ReadmeGenerator {
       s"[$fileName]($fileName)"
     }
   }
+
+  def createSubDocumentLink(dir: Path) = {
+    require(exists! dir && (stat! dir).isDir)
+
+    s"[${(stat! dir).name}](${(stat! dir).name}/README.md)"
+  }
 }
