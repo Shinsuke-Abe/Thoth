@@ -26,8 +26,8 @@ object DocDirectoryParser {
 
     val children = list.filter(p => (stat! p).isDir && (stat! p).name != "umls" && (stat! p).name != "resources")
 
-    if(children.isEmpty) DocDirectory(markdowns, umls, resources.toList ::: filesOutOfRules.toList, Seq())
-    else DocDirectory(markdowns, umls, resources.toList ::: filesOutOfRules.toList, children.map(p => parseDir(p.toString())))
+    if(children.isEmpty) DocDirectory(Path(path), markdowns, umls, resources.toList ::: filesOutOfRules.toList, Seq())
+    else DocDirectory(Path(path), markdowns, umls, resources.toList ::: filesOutOfRules.toList, children.map(p => parseDir(p.toString())))
   }
 
   implicit class RichPath(path: Path) {

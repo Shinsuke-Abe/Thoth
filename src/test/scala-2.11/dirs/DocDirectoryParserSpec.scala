@@ -14,6 +14,12 @@ class DocDirectoryParserSpec extends Specification {
       DocDirectoryParser((targetBaseDir/'notfound).toString) must throwA[Exception]
     }
 
+    "指定されたディレクトリのパスを取得できる" >> {
+      val targetDir = targetBaseDir/'getmarkdowns
+
+      DocDirectoryParser(targetDir.toString()).base must equalTo(targetDir)
+    }
+
     "markdownファイルを取得できる" >> {
       val targetDir = targetBaseDir/'getmarkdowns
       val expected = Seq(targetDir/"bar.md", targetDir/"foo.md")
@@ -49,7 +55,7 @@ class DocDirectoryParserSpec extends Specification {
 
       val actual =  DocDirectoryParser(targetDir.toString)
 
-      actual.children must equalTo(Seq(DocDirectory(expectedMarkdown, expectedUmls, Seq(), Seq())))
+      actual.children must equalTo(Seq(DocDirectory(targetDir/'child, expectedMarkdown, expectedUmls, Seq(), Seq())))
     }
   }
 }
