@@ -9,7 +9,7 @@ object DocDirectoryParser {
 
   def mapDirs(paths: List[Path], docDirs: List[DocDirectory] = List()): List[DocDirectory] = {
     val children = paths.map(path =>
-      (ls! path).filter(p => (stat! p).isDir && (stat! p).name != "umls" && (stat! p).name != "resources")).flatten
+      (ls! path).filter(p => (stat! p).isDir && !List("umls", "resources").exists(_ == (stat! p).name))).flatten
 
     val addedDir = docDirs ::: paths.map(parseDir(_))
 
