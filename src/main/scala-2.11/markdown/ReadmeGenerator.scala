@@ -7,9 +7,9 @@ import dirs.DocDirectory
  * @author mao.instantlife at gmail.com
  */
 object ReadmeGenerator {
-  def apply(dir: DocDirectory) = {
+  def apply(dir: DocDirectory, subDocs: List[DocDirectory] = List()) = {
     val documentLinks = dir.markdowns.map(f => s"* ${createDocumentLink(f)}").mkString("\n")
-    val subDocumentLinks = dir.children.map(d => s"* ${createSubDocumentLink(d.base)}").mkString("\n")
+    val subDocumentLinks = subDocs.map(d => s"* ${createSubDocumentLink(d.base)}").mkString("\n")
 
     s"""# ${(stat! dir.base).name}
        |

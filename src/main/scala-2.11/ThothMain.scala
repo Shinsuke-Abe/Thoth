@@ -19,7 +19,7 @@ object ThothMain extends App {
 
   implicit val pathset = IOPathSet(inputBase, outputBase)
 
-  generateDocuments(DocDirectoryParser(inputBase))
+  DocDirectoryParser(inputBase).foreach(generateDocuments(_))
   
   def generateDocuments(docDirectory: DocDirectory) {
     // Thothカスタムタグのリプレース
@@ -39,9 +39,7 @@ object ThothMain extends App {
     // README.mdの出力
     write(
       docDirectory.base/"README.md" toOutputFor Markdown(), // TODO 定型的な文字列を固定化する
-      ReadmeGenerator(docDirectory))
-    
-    docDirectory.children.foreach(generateDocuments(_))
+      ReadmeGenerator(docDirectory)) // TODO サブディレクトリを抽出する
   }
 
   case class IOPathSet(inputBase: Path, outputBase: Path)

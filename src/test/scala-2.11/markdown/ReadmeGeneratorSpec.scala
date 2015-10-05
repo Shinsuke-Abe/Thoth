@@ -88,12 +88,13 @@ class ReadmeGeneratorSpec extends Specification {
           targetBaseDir/"hastitleheaderonsecond.md",
           targetBaseDir/"withouttitleheader.md"),
         Seq(),
-        Seq(),
-        Seq(DocDirectory(targetBaseDir/'SubDocument1, Seq(), Seq(), Seq(), Seq()),
-            DocDirectory(targetBaseDir/'SubDocument2, Seq(), Seq(), Seq(), Seq()))
-      )
+        Seq())
 
-      ReadmeGenerator(target) must equalTo(expected)
+      val subTargetList =
+        List(DocDirectory(targetBaseDir/'SubDocument1, Seq(), Seq(), Seq()),
+             DocDirectory(targetBaseDir/'SubDocument2, Seq(), Seq(), Seq()))
+
+      ReadmeGenerator(target, subTargetList) must equalTo(expected)
     }
   }
 
