@@ -19,27 +19,26 @@ object ThothMain extends App {
 
   implicit val pathset = IOPathSet(inputBase, outputBase)
 
-  DocDirectoryParser(inputBase).foreach(generateDocuments(_))
-  
-  def generateDocuments(docDirectory: DocDirectory) {
+  val paths = DocDirectoryParser(inputBase)
+  paths.foreach{path =>
     // Thothカスタムタグのリプレース
-    docDirectory.markdowns.foreach{ file =>
+    path.markdowns.foreach{ file =>
       write(file toOutputFor Markdown(), ThothCustomMarkdownParser(file)) }
 
     // PlantUML画像出力
-    docDirectory.umls.foreach{ file =>
-      PlantUmlImageGenerator(file, docDirectory.base/'umls toOutputFor Markdown()) match {
+    path.umls.foreach{ file =>
+      PlantUmlImageGenerator(file, path.base/'umls toOutputFor Markdown()) match {
         case Left(e) => throw e
       }
     }
 
     // そのままコピーするもの
-    docDirectory.resources.foreach(file => cp(file, file toOutputFor Markdown()))
+    path.resources.foreach(file => cp(file, file toOutputFor Markdown()))
 
     // README.mdの出力
     write(
-      docDirectory.base/"README.md" toOutputFor Markdown(), // TODO 定型的な文字列を固定化する
-      ReadmeGenerator(docDirectory)) // TODO サブディレクトリを抽出する
+      path.base/"README.md" toOutputFor Markdown(), // TODO 定型的な文字列を固定化する
+      ReadmeGenerator(path, paths.filter(_.base/up == path.base)))
   }
 
   case class IOPathSet(inputBase: Path, outputBase: Path)
