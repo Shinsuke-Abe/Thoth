@@ -8,8 +8,8 @@ import plantuml.PlantUmlImageGenerator
  * @author mao.instantlife at gmail.com
  */
 object ThothMain extends App {
-  val inputDir = args(0)
-  implicit val outputDir = Path(args(1))
+  val inputBase = Path(args(0))
+  val outputBase = Path(args(1))
   val isOfficeOutput = if (args.length > 2) {
     args(3) match {
       case "true" => true
@@ -17,8 +17,9 @@ object ThothMain extends App {
     }
   } else false
 
-  implicit val inputBaseDir = Path(inputDir)
-  generateDocuments(DocDirectoryParser(inputDir)) // TODO 引数の型をPathに変更した方がいい
+  implicit val pathset = IOPathSet(inputBase, outputBase)
+
+  generateDocuments(DocDirectoryParser(inputBase))
   
   def generateDocuments(docDirectory: DocDirectory) {
     // Thothカスタムタグのリプレース
@@ -43,9 +44,11 @@ object ThothMain extends App {
     docDirectory.children.foreach(generateDocuments(_))
   }
 
+  case class IOPathSet(inputBase: Path, outputBase: Path)
+
   implicit class RichPath(path: Path) {
-    def toOutputFor(outputType: OutputType)(implicit inputBase: Path, outputBase: Path) = {
-      OutputPathCreator(path, inputBase, outputBase, outputType)
+    def toOutputFor(outputType: OutputType)(implicit pathset: IOPathSet) = {
+      OutputPathCreator(path, pathset.inputBase, pathset.outputBase, outputType)
     }
   }
 //
