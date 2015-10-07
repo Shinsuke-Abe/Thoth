@@ -3,6 +3,7 @@ import dirs._
 import markdown.{ReadmeGenerator, ThothCustomMarkdownParser}
 import pandoc.PandocExecutor
 import plantuml.PlantUmlImageGenerator
+import common.Constants._
 
 /**
  * @author mao.instantlife at gmail.com
@@ -20,6 +21,8 @@ object ThothMain extends App {
   implicit val pathset = IOPathSet(inputBase, outputBase)
 
   val paths = DocDirectoryParser(inputBase)
+
+  // Markdown出力
   paths.foreach{path =>
     // Thothカスタムタグのリプレース
     path.markdowns.foreach{ file =>
@@ -27,7 +30,7 @@ object ThothMain extends App {
 
     // PlantUML画像出力
     path.umls.foreach{ file =>
-      PlantUmlImageGenerator(file, path.base/'umls toOutputFor Markdown()) match {
+      PlantUmlImageGenerator(file, path.base/umls toOutputFor Markdown()) match {
         case Left(e) => throw e
       }
     }
@@ -37,8 +40,14 @@ object ThothMain extends App {
 
     // README.mdの出力
     write(
-      path.base/"README.md" toOutputFor Markdown(), // TODO 定型的な文字列を固定化する
+      path.base/README toOutputFor Markdown(),
       ReadmeGenerator(path, paths.filter(_.base/up == path.base)))
+  }
+
+  // Officeドキュメント出力
+  if(isOfficeOutput) {
+    paths.flatten(_.markdowns).foreach(file =>
+      PandocExecutor(file toOutputFor Markdown(), file / up toOutputFor OfficeDoc()))
   }
 
   case class IOPathSet(inputBase: Path, outputBase: Path)
@@ -48,8 +57,4 @@ object ThothMain extends App {
       OutputPathCreator(path, pathset.inputBase, pathset.outputBase, outputType)
     }
   }
-//
-//  alt Officeドキュメント生成フラグ=true
-//  ThothMain --> PandocCommandGenerator : Pandocコマンド生成
-//  PandocCommandGenerator --> ThothMain : Pandocコマンド生成_Response
 }
