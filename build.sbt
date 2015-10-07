@@ -23,7 +23,7 @@ dockerfile in docker := {
   val classpath = (managedClasspath in Compile).value
   val mainclass = mainClass.in(Compile, packageBin).value.getOrElse(sys.error("Expected exactly one main class"))
   val jarTarget = s"/app/${jarFile.getName}"
-  val classpathString = classpath.files.map("/app" + _.getName).mkString(":") + ":" + jarTarget
+  val classpathString = classpath.files.map("/app/" + _.getName).mkString(":") + ":" + jarTarget
 
   // Dockerファイル生成
   new Dockerfile {
