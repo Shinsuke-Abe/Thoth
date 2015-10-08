@@ -1,6 +1,7 @@
 package markdown
 
 import ammonite.ops._
+import common.Constants._
 
 import scala.util.parsing.combinator.RegexParsers
 
@@ -13,8 +14,8 @@ object ThothCustomMarkdownParser extends RegexParsers {
     case None ~ pumlFile => "!" + pumlFile}
 
   lazy val pumlFile = "(" ~> """.+\.puml""".r ~ opt(title) <~ ")" ^^ {
-    case file ~ Some(title) => "(" + file.replace(".puml", ".png") + " " + title.mkString("\"", "", "\"") + ")"
-    case file ~ None => "(" + file.replace(".puml", ".png") + ")"
+    case file ~ Some(title) => "(" + file.replace(pumlExt, pngExt) + " " + title.mkString("\"", "", "\"") + ")"
+    case file ~ None => "(" + file.replace(pumlExt, pngExt) + ")"
   }
 
   lazy val alterText = "[" ~> "[^\\[\\]]*".r <~ "]"

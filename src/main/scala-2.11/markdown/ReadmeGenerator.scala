@@ -2,6 +2,7 @@ package markdown
 
 import ammonite.ops._
 import dirs.DocDirectory
+import common.Constants._
 
 /**
  * @author mao.instantlife at gmail.com
@@ -38,6 +39,6 @@ object ReadmeGenerator {
   def createSubDocumentLink(dir: Path) = {
     require(exists! dir && (stat! dir).isDir)
 
-    s"[${(stat! dir).name}](${(stat! dir).name}/README.md)"
+    s"[${(stat! dir).name}](${(stat! dir).name}/${README})"
   }
 }

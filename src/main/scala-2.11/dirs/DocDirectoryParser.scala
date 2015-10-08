@@ -1,6 +1,7 @@
 package dirs
 
 import ammonite.ops._
+import common.Constants._
 /**
  * Created by shinsuke-abe on 2015/10/01.
  */
@@ -8,8 +9,7 @@ object DocDirectoryParser {
   def apply(path: Path): List[DocDirectory] = mapDirs(List(path))
 
   def mapDirs(paths: List[Path], docDirs: List[DocDirectory] = List()): List[DocDirectory] = {
-    val children = paths.map(path =>
-      (ls! path).filter(p => (stat! p).isDir && !List("umls", "resources").exists(_ == (stat! p).name))).flatten
+    val children = paths.map(path => (ls! path).filter(_ isSubDirectory)).flatten
 
     val addedDir = docDirs ::: paths.map(parseDir(_))
 
@@ -20,21 +20,21 @@ object DocDirectoryParser {
   def parseDir(path: Path): DocDirectory = {
     val list = ls! path
 
-    val markdowns = list.filter(_ hasSpecifiedExtension ".md")
+    val markdowns = list.filter(_ hasSpecifiedExtension markdownExt)
 
-    val umls = list.find(_ isSpecifiedDirectory "umls") match {
-      case Some(umls) => ls! umls filter(_ hasSpecifiedExtension ".puml")
+    val umlfiles = list.find(_ isSpecifiedDirectory umls) match {
+      case Some(umls) => ls! umls filter(_ hasSpecifiedExtension pumlExt)
       case None => Seq()
     }
 
-    val resources = list.find(_ isSpecifiedDirectory "resources") match {
+    val resourcefiles = list.find(_ isSpecifiedDirectory resources) match {
       case Some(resources) => ls! resources
       case None => Seq()
     }
 
-    val filesOutOfRules = list.find(_ hasNotSpecifiedExtension ".md")
+    val filesOutOfRules = list.find(_ hasNotSpecifiedExtension markdownExt)
 
-    DocDirectory(path, markdowns, umls, resources.toList ::: filesOutOfRules.toList)
+    DocDirectory(path, markdowns, umlfiles, resourcefiles.toList ::: filesOutOfRules.toList)
   }
 
   implicit class RichPath(path: Path) {
@@ -42,7 +42,9 @@ object DocDirectoryParser {
 
     def hasNotSpecifiedExtension(extension: String) = (stat! path).isFile && !(stat! path).name.endsWith(extension)
 
-    def isSpecifiedDirectory(name: String) = (stat! path).isDir && (stat! path).name == name
+    def isSpecifiedDirectory(name: Symbol) = (stat! path).isDir && Symbol((stat! path).name) == name
+
+    def isSubDirectory = (stat! path).isDir && !excludeSubDirectories.exists(_ == Symbol((stat! path).name))
   }
 }
 

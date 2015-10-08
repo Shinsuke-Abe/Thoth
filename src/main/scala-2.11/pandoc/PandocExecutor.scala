@@ -1,6 +1,7 @@
 package pandoc
 
 import ammonite.ops._
+import common.Constants._
 
 /**
  * Created by shinsuke-abe on 2015/10/02.
@@ -18,7 +19,7 @@ object PandocExecutor {
   def generateArgs(inputDir: Path, outputDir: Path) = {
     require(exists! inputDir && (stat! inputDir).isFile)
 
-    val outputFileName = (stat! inputDir).name.replaceAll(".md", ".docx")
+    val outputFileName = (stat! inputDir).name.replaceAll(markdownExt, wordExt)
     List("-o", (outputDir/outputFileName).toString(), inputDir.toString)
   }
 }
