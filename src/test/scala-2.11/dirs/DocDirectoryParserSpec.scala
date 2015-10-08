@@ -2,6 +2,7 @@ package dirs
 
 import ammonite.ops._
 import org.specs2.mutable._
+import common.Constants._
 
 /**
  * Created by shinsuke-abe on 2015/10/01.
@@ -29,21 +30,21 @@ class DocDirectoryParserSpec extends Specification {
 
     "umls配下のpumlファイルを取得できる" >> {
       val targetDir = targetBaseDir/'getumls
-      val expected = Seq(targetDir/'umls/"sample1.puml", targetDir/'umls/"sample2.puml")
+      val expected = Seq(targetDir/umls/"sample1.puml", targetDir/umls/"sample2.puml")
 
       DocDirectoryParser(targetDir).head.umls must equalTo(expected)
     }
 
     "resources配下のファイルを取得できる" >> {
       val targetDir = targetBaseDir/'getresources
-      val expected = Seq(targetDir/'resources/"sample1.txt", targetDir/'resources/"sample2.txt")
+      val expected = Seq(targetDir/resources/"sample1.txt", targetDir/resources/"sample2.txt")
 
       DocDirectoryParser(targetDir).head.resources must equalTo(expected)
     }
 
     "ルールに沿わないファイルはresoucesのリストに追加" >> {
       val targetDir = targetBaseDir/'getresourcesplus
-      val expected = Seq(targetDir/'resources/"sample1.txt", targetDir/'resources/"sample2.txt", targetDir/"sample3.txt")
+      val expected = Seq(targetDir/resources/"sample1.txt", targetDir/resources/"sample2.txt", targetDir/"sample3.txt")
 
       DocDirectoryParser(targetDir).head.resources must equalTo(expected)
     }
@@ -54,7 +55,7 @@ class DocDirectoryParserSpec extends Specification {
 
       val expectedMarkdown = Seq(targetDir/"bar.md", targetDir/"foo.md")
       val expectedChildMarkdown = Seq(targetChildDir/"barchild.md", targetChildDir/"foochild.md")
-      val expectedChildUml = Seq(targetChildDir/'umls/"sample1.puml", targetChildDir/'umls/"sample2.puml")
+      val expectedChildUml = Seq(targetChildDir/umls/"sample1.puml", targetChildDir/umls/"sample2.puml")
 
       DocDirectoryParser(targetDir) must equalTo(
         List(DocDirectory(targetDir, expectedMarkdown, Seq(), Seq()),
