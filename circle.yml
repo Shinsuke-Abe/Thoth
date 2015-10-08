@@ -1,6 +1,6 @@
 dependencies:
   cache_directories:
-    - pandoc-1.13.2-1-amd64.deb
+    - graphviz-2.38.0
     - "~/.ivy2"
     - "~/.sbt"
   pre:
@@ -14,5 +14,3 @@ dependencies:
     - which dot
     - dot -V
     - sudo apt-get -y install pandoc
-    - if [[ ! -e pandoc-1.13.2-1-amd64.deb ]]; then wget https://github.com/jgm/pandoc/releases/download/1.13.2/pandoc-1.13.2-1-amd64.deb;fi
-    - sudo dpkg -i pandoc-1.13.2-1-amd64.deb
