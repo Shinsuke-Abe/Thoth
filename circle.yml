@@ -4,6 +4,7 @@ dependencies:
     - sudo dpkg -i sbt-0.13.8.deb
     - sudo apt-get update
     - sudo apt-get -y install ifupdown
+    - sudo apt-get -y install upstart-job
     - sudo apt-get -y install libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0
     - sudo apt-get -y install libgvc6
     - sudo apt-get -y install graphviz
