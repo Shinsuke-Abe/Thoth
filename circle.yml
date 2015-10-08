@@ -1,11 +1,18 @@
 dependencies:
+  cache_directories:
+    - pandoc-1.13.2-1-amd64.deb
+    - "~/.ivy2"
+    - "~/.sbt"
   pre:
     - wget -q https://dl.bintray.com/sbt/debian/sbt-0.13.8.deb
     - sudo dpkg -i sbt-0.13.8.deb
-    - sudo apt-get update
-    - sudo apt-get -y install ifupdown
-    - sudo apt-get -y install upstart-job
-    - sudo apt-get -y install libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0
-    - sudo apt-get -y install libgvc6
-    - sudo apt-get -y install graphviz
+    - wget -O graphviz.tar.gz --quiet http://www.graphviz.org/pub/graphviz/ARCHIVE/graphviz-2.38.0.tar.gz
+    - tar -zxf graphviz.tar.gz
+    - graphviz-2.38.0/configure --silent
+    - make --silent --ignore-errors && make --silent --ignore-errors install > /dev/null
+    - echo 'which dot && version:'
+    - which dot
+    - dot -V
     - sudo apt-get -y install pandoc
+    - if [[ ! -e pandoc-1.13.2-1-amd64.deb ]]; then wget https://github.com/jgm/pandoc/releases/download/1.13.2/pandoc-1.13.2-1-amd64.deb;fi
+    - sudo dpkg -i pandoc-1.13.2-1-amd64.deb
