@@ -22,3 +22,5 @@ dependencies:
 test:
   override:
     - "sbt clean coverage test"
+  post:
+    - "sbt coveralls"
