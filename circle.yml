@@ -1,3 +1,7 @@
+machine:
+  services:
+    - docker
+
 general:
   artifacts:
     - "target/scala-2.11/coverage-report"
@@ -24,3 +28,10 @@ test:
     - "sbt clean coverage test"
   post:
     - "sbt coveralls"
+
+deployment:
+  hub:
+    branch: master
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - sbt dockerBuildAndPush
