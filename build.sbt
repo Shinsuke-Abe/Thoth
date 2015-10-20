@@ -6,10 +6,13 @@ scalaVersion := "2.11.7"
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/releases"
 
+resolvers += Resolver.sonatypeRepo("public")
+
 libraryDependencies ++= Seq(
   "net.sourceforge.plantuml" % "plantuml" % "8031",
   "com.lihaoyi" %% "ammonite-ops" % "0.4.8",
   "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
+  "com.github.scopt" %% "scopt" % "3.3.0",
   "org.specs2" %% "specs2-core" % "3.6.4" % "test"
 )
 
