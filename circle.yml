@@ -1,3 +1,11 @@
+machine:
+  services:
+    - docker
+
+general:
+  artifacts:
+    - "target/scala-2.11/coverage-report"
+
 dependencies:
   cache_directories:
     - graphviz-2.38.0
@@ -14,3 +22,16 @@ dependencies:
     - which dot
     - dot -V
     - sudo apt-get -y install pandoc
+
+test:
+  override:
+    - "sbt clean coverage test"
+  post:
+    - "sbt coveralls"
+
+deployment:
+  hub:
+    branch: master
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - sbt dockerBuildAndPush
