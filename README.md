@@ -1,3 +1,18 @@
+# リポジトリ状況
+
+## テスト
+
+[![Circle CI](https://circleci.com/gh/Shinsuke-Abe/Thoth.svg?style=svg)](https://circleci.com/gh/Shinsuke-Abe/Thoth)
+
+## カバレッジ
+
+master [![Coverage Status](https://coveralls.io/repos/Shinsuke-Abe/Thoth/badge.svg?branch=master&service=github)](https://coveralls.io/github/Shinsuke-Abe/Thoth?branch=master)
+
+develop [![Coverage Status](https://coveralls.io/repos/Shinsuke-Abe/Thoth/badge.svg?branch=develop&service=github)](https://coveralls.io/github/Shinsuke-Abe/Thoth?branch=develop)
+
+# 使い方
+
+WIP
 
 ```
 thoth 1.0
