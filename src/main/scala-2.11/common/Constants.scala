@@ -4,6 +4,8 @@ package common
  * @author mao.instantlife at gmail.com
  */
 object Constants {
+  val dots = 'dots
+
   val umls = 'umls
 
   val resources = 'resources

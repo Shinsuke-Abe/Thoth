@@ -24,6 +24,11 @@ object DocDirectoryParser {
 
     val markdowns = list.filter(_ hasSpecifiedExtension markdownExt)
 
+    val dotfiles = list.find(_ isSpecifiedDirectory dots) match {
+      case Some(dots) => ls! dots filter(_ hasSpecifiedExtension dotExt)
+      case None => Seq()
+    }
+
     val umlfiles = list.find(_ isSpecifiedDirectory umls) match {
       case Some(umls) => ls! umls filter(_ hasSpecifiedExtension pumlExt)
       case None => Seq()
@@ -36,7 +41,7 @@ object DocDirectoryParser {
 
     val filesOutOfRules = list.find(_ hasNotSpecifiedExtension markdownExt)
 
-    DocDirectory(path, markdowns, umlfiles, resourcefiles.toList ::: filesOutOfRules.toList)
+    DocDirectory(path, markdowns, dotfiles, umlfiles, resourcefiles.toList ::: filesOutOfRules.toList)
   }
 }
 

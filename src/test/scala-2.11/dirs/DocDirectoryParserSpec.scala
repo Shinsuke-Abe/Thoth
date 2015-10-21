@@ -28,6 +28,13 @@ class DocDirectoryParserSpec extends Specification {
       DocDirectoryParser(targetDir).head.markdowns must equalTo(expected)
     }
 
+    "dots配下のdotファイルを取得できる" >> {
+      val targetDir = targetBaseDir/'getdots
+      val expected = Seq(targetDir/dots/"sample1.dot", targetDir/dots/"sample2.dot")
+
+      DocDirectoryParser(targetDir).head.dots must equalTo(expected)
+    }
+
     "umls配下のpumlファイルを取得できる" >> {
       val targetDir = targetBaseDir/'getumls
       val expected = Seq(targetDir/umls/"sample1.puml", targetDir/umls/"sample2.puml")
@@ -58,8 +65,8 @@ class DocDirectoryParserSpec extends Specification {
       val expectedChildUml = Seq(targetChildDir/umls/"sample1.puml", targetChildDir/umls/"sample2.puml")
 
       DocDirectoryParser(targetDir) must equalTo(
-        List(DocDirectory(targetDir, expectedMarkdown, Seq(), Seq()),
-            DocDirectory(targetChildDir, expectedChildMarkdown, expectedChildUml, Seq())))
+        List(DocDirectory(targetDir, expectedMarkdown, Seq(), Seq(), Seq()),
+            DocDirectory(targetChildDir, expectedChildMarkdown, Seq(), expectedChildUml, Seq())))
     }
   }
 }
