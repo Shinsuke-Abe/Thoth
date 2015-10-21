@@ -36,7 +36,7 @@ dockerfile in docker := {
     run("apt-get", "update")
     run("apt-get", "-y", "install", "graphviz")
     run("apt-get", "-y", "install", "pandoc")
-    entryPoint("java", "-cp", classpathString, mainclass)
+    entryPoint("java", "-cp", classpathString, mainclass, "-i", "/in", "-o", "/out")
   }
 }
 

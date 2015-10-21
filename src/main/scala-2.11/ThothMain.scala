@@ -11,45 +11,46 @@ import common.Constants._
  * @author mao.instantlife at gmail.com
  */
 object ThothMain extends App {
-  val inputBase = Path(args(0))
-  val outputBase = Path(args(1))
-  val isOfficeOutput = if (args.length > 2) {
-    args(3) match {
-      case "true" => true
-      case _ => false
-    }
-  } else false
+  import ThothCommandLineArgs._
 
-  implicit val pathset = IOPathSet(inputBase, outputBase)
+  parser.parse(args, CommandLineArgs()) match {
+    case Some(commandLineArgs) => {
+      implicit val pathset = IOPathSet(commandLineArgs.inputBase, commandLineArgs.outputBase)
 
-  val paths = DocDirectoryParser(inputBase)
+      val paths = DocDirectoryParser(commandLineArgs.inputBase)
 
-  // Markdown出力
-  paths.foreach{path =>
-    // Thothカスタムタグのリプレース
-    path.markdowns.foreach{ file =>
-      write(file toOutputFor Markdown(), ThothCustomMarkdownParser(file)) }
+      // Markdown出力
+      paths.foreach { path =>
+        // Thothカスタムタグのリプレース
+        path.markdowns.foreach { file =>
+          write(file toOutputFor Markdown(), ThothCustomMarkdownParser(file))
+        }
 
-    // PlantUML画像出力
-    path.umls.foreach{ file =>
-      PlantUmlImageGenerator(file, path.base/umls toOutputFor Markdown()) match {
-        case Left(e) => throw e
+        // PlantUML画像出力
+        path.umls.foreach { file =>
+          PlantUmlImageGenerator(file, path.base / umls toOutputFor Markdown()) match {
+            case Left(e) => throw e
+          }
+        }
+
+        // そのままコピーするもの
+        path.resources.foreach(file => cp(file, file toOutputFor Markdown()))
+
+        // README.mdの出力
+        write(
+          path.base / README toOutputFor Markdown(),
+          ReadmeGenerator(path, paths.filter(_.base / up == path.base)))
       }
+
+      // Officeドキュメント出力
+      if (commandLineArgs.isOfficeOutput) {
+        paths.flatten(_.markdowns).foreach(file =>
+          PandocExecutor(file toOutputFor Markdown(), file / up toOutputFor OfficeDoc()))
+      }
+
+      System.exit(0)
     }
-
-    // そのままコピーするもの
-    path.resources.foreach(file => cp(file, file toOutputFor Markdown()))
-
-    // README.mdの出力
-    write(
-      path.base/README toOutputFor Markdown(),
-      ReadmeGenerator(path, paths.filter(_.base/up == path.base)))
-  }
-
-  // Officeドキュメント出力
-  if(isOfficeOutput) {
-    paths.flatten(_.markdowns).foreach(file =>
-      PandocExecutor(file toOutputFor Markdown(), file / up toOutputFor OfficeDoc()))
+    case None => System.exit(99)
   }
 
   case class IOPathSet(inputBase: Path, outputBase: Path)
