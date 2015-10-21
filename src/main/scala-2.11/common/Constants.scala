@@ -14,6 +14,8 @@ object Constants {
 
   val pumlExt = ".puml"
 
+  val dotExt = ".dot"
+
   val wordExt = ".docx"
 
   val pngExt = ".png"
