@@ -22,26 +22,22 @@ object DocDirectoryParser {
   def parseDir(path: Path): DocDirectory = {
     val list = ls! path
 
-    val markdowns = list.filter(_ hasSpecifiedExtension markdownExt)
+    DocDirectory(
+      path,
+      list.filter(_ hasSpecifiedExtension markdownExt),
+      list getSubDirectoriesFiles(dots, Some(dotExt)),
+      list getSubDirectoriesFiles(umls, Some(pumlExt)),
+      list.getSubDirectoriesFiles(resources).toList ::: list.find(_ hasNotSpecifiedExtension markdownExt).toList)
+  }
 
-    val dotfiles = list.find(_ isSpecifiedDirectory dots) match {
-      case Some(dots) => ls! dots filter(_ hasSpecifiedExtension dotExt)
-      case None => Seq()
+  implicit class RichLsSeq(pathList: LsSeq) {
+    def getSubDirectoriesFiles(dir: Symbol, extFilter: Option[String] = None) = {
+      (pathList.find(_ isSpecifiedDirectory dir), extFilter) match {
+        case (Some(dir), Some(extFilter)) => ls! dir filter(_ hasSpecifiedExtension extFilter)
+        case (Some(dir), None) => ls! dir
+        case (None, _) => Seq()
+      }
     }
-
-    val umlfiles = list.find(_ isSpecifiedDirectory umls) match {
-      case Some(umls) => ls! umls filter(_ hasSpecifiedExtension pumlExt)
-      case None => Seq()
-    }
-
-    val resourcefiles = list.find(_ isSpecifiedDirectory resources) match {
-      case Some(resources) => ls! resources
-      case None => Seq()
-    }
-
-    val filesOutOfRules = list.find(_ hasNotSpecifiedExtension markdownExt)
-
-    DocDirectory(path, markdowns, dotfiles, umlfiles, resourcefiles.toList ::: filesOutOfRules.toList)
   }
 }
 
