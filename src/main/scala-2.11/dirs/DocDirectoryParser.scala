@@ -6,6 +6,8 @@ import common.Constants._
  * Created by shinsuke-abe on 2015/10/01.
  */
 object DocDirectoryParser {
+  import common.PathUtils._
+
   def apply(path: Path): List[DocDirectory] = mapDirs(List(path))
 
   def mapDirs(paths: List[Path], docDirs: List[DocDirectory] = List()): List[DocDirectory] = {
@@ -35,16 +37,6 @@ object DocDirectoryParser {
     val filesOutOfRules = list.find(_ hasNotSpecifiedExtension markdownExt)
 
     DocDirectory(path, markdowns, umlfiles, resourcefiles.toList ::: filesOutOfRules.toList)
-  }
-
-  implicit class RichPath(path: Path) {
-    def hasSpecifiedExtension(extension: String) = (stat! path).isFile && (stat! path).name.endsWith(extension)
-
-    def hasNotSpecifiedExtension(extension: String) = (stat! path).isFile && !(stat! path).name.endsWith(extension)
-
-    def isSpecifiedDirectory(name: Symbol) = (stat! path).isDir && Symbol((stat! path).name) == name
-
-    def isSubDirectory = (stat! path).isDir && !excludeSubDirectories.exists(_ == Symbol((stat! path).name))
   }
 }
 

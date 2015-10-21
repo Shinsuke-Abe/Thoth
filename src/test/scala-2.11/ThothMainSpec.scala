@@ -53,6 +53,4 @@ class ThothMainSpec extends Specification {
       parser.parse(args, CommandLineArgs()) must beSome(CommandLineArgs(input, output, true))
     }
   }
-
-  // TODO パスの暗黙変換のテスト
 }

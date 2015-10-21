@@ -11,7 +11,7 @@ import common.Constants._
  * @author mao.instantlife at gmail.com
  */
 object ThothMain extends App {
-  import ThothCommandLineArgs._
+  import ThothCommandLineArgs._, common.PathUtils._
 
   parser.parse(args, CommandLineArgs()) match {
     case Some(commandLineArgs) => {
@@ -51,14 +51,6 @@ object ThothMain extends App {
       System.exit(0)
     }
     case None => System.exit(99)
-  }
-
-  case class IOPathSet(inputBase: Path, outputBase: Path)
-
-  implicit class RichPath(path: Path) {
-    def toOutputFor(outputType: OutputType)(implicit pathset: IOPathSet) = {
-      OutputPathCreator(path, pathset.inputBase, pathset.outputBase, outputType)
-    }
   }
 }
 
