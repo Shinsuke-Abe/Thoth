@@ -1,3 +1,5 @@
+import java.io.File
+
 import ammonite.ops._
 import dirs._
 import markdown.{ReadmeGenerator, ThothCustomMarkdownParser}
@@ -58,3 +60,30 @@ object ThothMain extends App {
     }
   }
 }
+
+object ThothCommandLineArgs {
+  // コマンドライン引数
+  case class CommandLineArgs(inputBase: Path = null, outputBase: Path = null, isOfficeOutput: Boolean = false)
+
+  // コマンドラインパーサ
+  val parser = new scopt.OptionParser[CommandLineArgs]("Thoth") {
+    head("thoth", "1.0")
+    // 入力パス
+    opt[File]('i', "inputBase") required() valueName("<directory>") action { (path,c) =>
+      c.copy(inputBase = Path(path))
+    } validate { path =>
+      if(exists! Path(path)) success else failure("Option --inputBase must be exists directory")
+    } text("inputBase is a required input directory property")
+    // 出力パス
+    opt[File]('o', "outputBase") required() valueName("<dirctory>") action { (path,c) =>
+      c.copy(outputBase = Path(path))
+    } validate { path =>
+      if(exists! Path(path)) success else failure("Option --outputBase must be exists directory")
+    } text("outputBase is a required output directory property")
+    // オフィスファイル出力フラグ
+    opt[Unit]("officeOutput") action { (_, c) =>
+      c.copy(isOfficeOutput = true)
+    } text("officeOutput is convert markdown to docx file flag")
+  }
+}
+
