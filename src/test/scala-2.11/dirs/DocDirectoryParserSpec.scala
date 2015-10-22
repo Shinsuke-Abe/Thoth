@@ -63,10 +63,12 @@ class DocDirectoryParserSpec extends Specification {
       val expectedMarkdown = Seq(targetDir/"bar.md", targetDir/"foo.md")
       val expectedChildMarkdown = Seq(targetChildDir/"barchild.md", targetChildDir/"foochild.md")
       val expectedChildUml = Seq(targetChildDir/umls/"sample1.puml", targetChildDir/umls/"sample2.puml")
+      val expectedChildDot = Seq(targetChildDir/dots/"sample1.dot", targetChildDir/dots/"sample2.dot")
+      val expectedChildResource = Seq(targetChildDir/resources/"sample1.txt", targetChildDir/resources/"sample2.txt")
 
       DocDirectoryParser(targetDir) must equalTo(
         List(DocDirectory(targetDir, expectedMarkdown, Seq(), Seq(), Seq()),
-            DocDirectory(targetChildDir, expectedChildMarkdown, Seq(), expectedChildUml, Seq())))
+            DocDirectory(targetChildDir, expectedChildMarkdown, expectedChildDot, expectedChildUml, expectedChildResource)))
     }
   }
 }

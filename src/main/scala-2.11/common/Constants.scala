@@ -10,7 +10,7 @@ object Constants {
 
   val resources = 'resources
 
-  val excludeSubDirectories = List(umls, resources)
+  val excludeSubDirectories = List(dots, umls, resources)
 
   val markdownExt = ".md"
 
