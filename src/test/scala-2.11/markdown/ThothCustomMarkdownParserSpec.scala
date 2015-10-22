@@ -68,6 +68,57 @@ class ThothCustomMarkdownParserSpec extends Specification {
       ThothCustomMarkdownParser(targetFile) must equalTo(expected)
     }
 
+    "タイトルと代替テキストを省略したdotマークダウンをパースする" >> {
+      val targetFile = targetBaseDir/"withsimplestdotmarkdown.md"
+      val expected = """# タイトル
+                       |
+                       |テストマークダウンファイル
+                       |
+                       |## セクション１
+                       |
+                       |テスト
+                       |
+                       |!(dot/sample.png)""".stripMargin
+
+      ThothCustomMarkdownParser(targetFile) must equalTo(expected)
+    }
+
+    "代替テキストを省略したdotマークダウンをパースする" >> {
+      val targetFile = targetBaseDir/"withtitledotmarkdown.md"
+      val expected = """# タイトル
+                       |
+                       |テストマークダウンファイル
+                       |
+                       |## セクション１
+                       |
+                       |テスト
+                       |
+                       |!(dot/sample.png "タイトル")
+                       |
+                       |コメント""".stripMargin
+
+      ThothCustomMarkdownParser(targetFile) must equalTo(expected)
+    }
+
+    "すべての指定を省略しないdotマークダウンをパースする" >> {
+      val targetFile = targetBaseDir/"dotmarkdown.md"
+      val expected = """# タイトル
+                       |
+                       |テストマークダウンファイル
+                       |
+                       |## セクション１
+                       |
+                       |テスト
+                       |
+                       |![代替テキスト](dot/sample.png "タイトル")
+                       |
+                       |コメント
+                       |
+                       |コメント""".stripMargin
+
+      ThothCustomMarkdownParser(targetFile) must equalTo(expected)
+    }
+
     "カスタムタグがない場合は入力ファイルの内容と同じテキストが返る" >> {
       val targetFile = targetBaseDir/"withoutcustommarkdown.md"
       val expected = read! targetFile

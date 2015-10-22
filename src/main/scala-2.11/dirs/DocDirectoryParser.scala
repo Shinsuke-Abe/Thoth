@@ -6,6 +6,8 @@ import common.Constants._
  * Created by shinsuke-abe on 2015/10/01.
  */
 object DocDirectoryParser {
+  import common.PathUtils._
+
   def apply(path: Path): List[DocDirectory] = mapDirs(List(path))
 
   def mapDirs(paths: List[Path], docDirs: List[DocDirectory] = List()): List[DocDirectory] = {
@@ -20,31 +22,22 @@ object DocDirectoryParser {
   def parseDir(path: Path): DocDirectory = {
     val list = ls! path
 
-    val markdowns = list.filter(_ hasSpecifiedExtension markdownExt)
-
-    val umlfiles = list.find(_ isSpecifiedDirectory umls) match {
-      case Some(umls) => ls! umls filter(_ hasSpecifiedExtension pumlExt)
-      case None => Seq()
-    }
-
-    val resourcefiles = list.find(_ isSpecifiedDirectory resources) match {
-      case Some(resources) => ls! resources
-      case None => Seq()
-    }
-
-    val filesOutOfRules = list.find(_ hasNotSpecifiedExtension markdownExt)
-
-    DocDirectory(path, markdowns, umlfiles, resourcefiles.toList ::: filesOutOfRules.toList)
+    DocDirectory(
+      path,
+      list.filter(_ hasSpecifiedExtension markdownExt),
+      list getSubDirectoriesFiles(dots, Some(dotExt)),
+      list getSubDirectoriesFiles(umls, Some(pumlExt)),
+      list.getSubDirectoriesFiles(resources).toList ::: list.find(_ hasNotSpecifiedExtension markdownExt).toList)
   }
 
-  implicit class RichPath(path: Path) {
-    def hasSpecifiedExtension(extension: String) = (stat! path).isFile && (stat! path).name.endsWith(extension)
-
-    def hasNotSpecifiedExtension(extension: String) = (stat! path).isFile && !(stat! path).name.endsWith(extension)
-
-    def isSpecifiedDirectory(name: Symbol) = (stat! path).isDir && Symbol((stat! path).name) == name
-
-    def isSubDirectory = (stat! path).isDir && !excludeSubDirectories.exists(_ == Symbol((stat! path).name))
+  implicit class RichLsSeq(pathList: LsSeq) {
+    def getSubDirectoriesFiles(dir: Symbol, extFilter: Option[String] = None) = {
+      (pathList.find(_ isSpecifiedDirectory dir), extFilter) match {
+        case (Some(dir), Some(extFilter)) => ls! dir filter(_ hasSpecifiedExtension extFilter)
+        case (Some(dir), None) => ls! dir
+        case (None, _) => Seq()
+      }
+    }
   }
 }
 

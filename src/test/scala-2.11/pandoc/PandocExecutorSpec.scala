@@ -16,6 +16,13 @@ class PandocExecutorSpec extends Specification {
 
       (exists! (outputTarget/"test.docx")) must beTrue
     }
+
+    "入力ファイルが存在しない場合は例外をスローする" >> {
+      val inputTarget = cwd/"notfound.md"
+      val outputTarget = Path(Path.makeTmp)
+
+      PandocExecutor(inputTarget, outputTarget) must throwA[IllegalArgumentException]
+    }
   }
   "generateArgs" >> {
     "引数リストを作る" >> {
@@ -25,13 +32,6 @@ class PandocExecutorSpec extends Specification {
       val expected = List("-o", (outputTarget/"test.docx").toString, inputTarget.toString)
 
       PandocExecutor.generateArgs(inputTarget, outputTarget) must equalTo(expected)
-    }
-
-    "入力ファイルが存在しない場合は例外をスローする" >> {
-      val inputTarget = cwd/"notfound.md"
-      val outputTarget = Path(Path.makeTmp)
-
-      PandocExecutor.generateArgs(inputTarget, outputTarget) must throwA[IllegalArgumentException]
     }
   }
 }

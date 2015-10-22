@@ -1,0 +1,4 @@
+digraph sample {
+  alpha -> beta;
+  alpha ->
+}
