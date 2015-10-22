@@ -1,25 +1,19 @@
 package graphviz
 
 import ammonite.ops._
+import common.CommandExecutor
 import common.Constants._
 
 /**
  * Created by shinsuke-abe on 2015/10/22.
  */
-object GraphvizImageGenerator {
-  def apply(inputDir: Path, outputDir: Path) = {
-    implicit val wd: Path = inputDir/up
+object GraphvizImageGenerator extends CommandExecutor {
+  override def generateArgs(inputDir: Path, outputDir: Path) =
+    List("-Tpng", inputDir.toString, "-o", (outputDir/outputFileName(inputDir)).toString)
 
-    if(exists! outputDir == false) mkdir! outputDir
+  override def executeCommand(args: List[String])(implicit implicitWd: Path) = %%dot(args)
 
-    %%dot(generateArgs(inputDir, outputDir))
-  }
+  override def inputExt = dotExt
 
-  def generateArgs(inputDir: Path, outputDir: Path) = {
-    require(exists! inputDir && (stat! inputDir).isFile)
-
-    val outputFileName = (stat! inputDir).name.replaceAll(dotExt, pngExt)
-    List("-Tpng", inputDir.toString, "-o", (outputDir/outputFileName).toString())
-  }
-
+  override def outputExt = pngExt
 }

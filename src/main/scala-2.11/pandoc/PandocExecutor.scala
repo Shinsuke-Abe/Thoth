@@ -1,25 +1,19 @@
 package pandoc
 
 import ammonite.ops._
+import common.CommandExecutor
 import common.Constants._
 
 /**
  * Created by shinsuke-abe on 2015/10/02.
  */
-object PandocExecutor {
+object PandocExecutor extends CommandExecutor {
+  override def generateArgs(inputDir: Path, outputDir: Path) =
+    List("-o", (outputDir/outputFileName(inputDir)).toString(), inputDir.toString)
 
-  def apply(inputDir: Path, outputDir: Path) = {
-    implicit val wd: Path = inputDir/up
+  override def executeCommand(args: List[String])(implicit implicitWd: Path) = %%pandoc(args)
 
-    if(exists! outputDir == false) mkdir! outputDir
+  override def inputExt = markdownExt
 
-    %%pandoc(generateArgs(inputDir, outputDir))
-  }
-
-  def generateArgs(inputDir: Path, outputDir: Path) = {
-    require(exists! inputDir && (stat! inputDir).isFile)
-
-    val outputFileName = (stat! inputDir).name.replaceAll(markdownExt, wordExt)
-    List("-o", (outputDir/outputFileName).toString(), inputDir.toString)
-  }
+  override def outputExt = wordExt
 }
