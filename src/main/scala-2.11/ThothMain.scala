@@ -2,6 +2,7 @@ import java.io.File
 
 import ammonite.ops._
 import dirs._
+import graphviz.GraphvizImageGenerator
 import markdown.{ReadmeGenerator, ThothCustomMarkdownParser}
 import pandoc.PandocExecutor
 import plantuml.PlantUmlImageGenerator
@@ -24,6 +25,11 @@ object ThothMain extends App {
         // Thothカスタムタグのリプレース
         path.markdowns.foreach { file =>
           write(file toOutputFor Markdown(), ThothCustomMarkdownParser(file))
+        }
+
+        // Graphviz画像出力
+        path.dots.foreach { file =>
+          GraphvizImageGenerator(file, path.base / dots toOutputFor Markdown())
         }
 
         // PlantUML画像出力
